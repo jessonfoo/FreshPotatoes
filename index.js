@@ -18,6 +18,8 @@ var sequelize = new Sequelize('main','username','password', {
   storage: DB_PATH,
   port   : 3306
 });
+const Film = sequelize.import('./app/models/film');
+const Genre = sequelize.import('./app/models/genre');
 
 // ROUTES
 app.get('/films/:id/recommendations', getFilmRecommendations);
