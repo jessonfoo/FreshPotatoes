@@ -11,6 +11,13 @@ Promise.resolve()
   .then(() => app.listen(PORT, () => console.log(`App listening on port ${PORT}`)))
   .catch((err) => { if (NODE_ENV === 'development') console.error(err.stack); });
 
+// define sequelize
+var sequelize = new Sequelize('main','username','password', {
+  dialect: 'sqlite',
+  storage: DB_PATH,
+  port   : 3306
+});
+
 // ROUTES
 app.get('/films/:id/recommendations', getFilmRecommendations);
 
@@ -18,5 +25,6 @@ app.get('/films/:id/recommendations', getFilmRecommendations);
 function getFilmRecommendations(req, res) {
   res.status(500).send('Not Implemented');
 }
+
 
 module.exports = app;
