@@ -53,11 +53,8 @@ function getAverageReviewRatingByFilmId(filmId) {
 function getRatings(filmsArray) {
   return Promise.each(filmsArray,function(film) {
     return getAverageReviewRatingByFilmId(parseInt(film.id)).then( rating => {
-      if(rating) {
-        film.averageRating = rating;
-        console.log(film);
-        return film;
-      }
+      film.average_rating = rating;
+      return film;
     });
   });
 }
@@ -101,14 +98,14 @@ function getFilmRecommendations(req, res) {
   try {
    let params = req.params;
    let filmId = parseInt(params.id);
-
     sequelize.sync().then(function() {
       getRelatedFilms(filmId).then(films =>
         getRatings(films))
-      .then( ratings => {
-        console.log(ratings);
-        return res.status(200).json(ratings);
-
+      .then( recommendations => {
+        let rFilms = recommendations.filter(function(film){
+          return (parseFloat(film.average_rating) > 4);
+      });
+        return res.status(200).json({recommendations:rFilms});
       });
     });
 
