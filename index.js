@@ -100,22 +100,22 @@ function getFilmRecommendations(req, res) {
    let limit = 10;
    let offset = 0;
    let filmId = false;
-   if(paramKeys.indexOf('limit') !== -1){
-     if(parseInt(params.limit) > 0) {
+   if(paramKeys.indexOf('limit') !== -1) {
+     if(params.limit && parseInt(params.limit) > 0) {
        limit = params.limit;
      }else{
        throw Error("error:invalid limit");
      }
    }
-   if(paramKeys.indexOf('offset') !== -1){
-      if(parseInt(params.offset)  > 0) {
+   if(paramKeys.indexOf('offset') !== -1) {
+      if(params.offset && parseInt(params.offset) > 0) {
         offset= params.offset;
       }else{
         throw Error("error:invalid offset");
       }
    }
-    if(paramKeys.indexOf('id') !== -1){
-      if(parseInt(params.id)  > 0) {
+    if(paramKeys.indexOf('id') !== -1) {
+      if(params.id && parseInt(params.id) > 0 ) {
         filmId= params.id;
       }else{
         throw Error("error:invalid id");
@@ -125,7 +125,7 @@ function getFilmRecommendations(req, res) {
       getRelatedFilms(filmId).then(films =>
         getRatings(films))
       .then( recommendations => {
-        let rFilms = recommendations.filter(function(film){
+        let rFilms = recommendations.filter(function(film) {
           return (parseFloat(film.average_rating) > 4);
       });
         return res.status(200).json({
