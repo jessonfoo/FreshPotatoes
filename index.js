@@ -1,6 +1,7 @@
 const sqlite = require('sqlite'),
       Sequelize = require('sequelize'),
-      request = require('request'),
+      request = require('then-request'),
+      Promise = require('bluebird'),
       express = require('express'),
       app = express();
 
