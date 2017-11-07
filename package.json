@@ -1,0 +1,41 @@
+{
+  "name": "fresh-potatoes",
+  "version": "1.0.0",
+  "description": "Your freshest place for film-related data",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "node -v | grep v6 || (echo 'Please update Node.js to v6. Other versions are not supported' && exit 1)",
+    "start": "nodemon --ignore spec/ index.js",
+    "test": "NODE_ENV=test PORT=3333 mocha --recursive --reporter spec"
+  },
+  "author": "GA Credentials",
+  "license": "CC­BY­NC­SA 4.0, GNU GPLv3",
+  "devDependencies": {
+    "babel-cli": "6.24.0",
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-transform-async-to-generator": "6.22.0",
+    "babel-plugin-transform-class-properties": "6.23.0",
+    "babel-plugin-transform-regenerator": "6.22.0",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-preset-es2015": "6.24.0",
+    "babel-preset-es2015-node4": "2.1.1",
+    "babel-runtime": "6.23.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-standard": "2.1.1",
+    "eslint-scope": "^3.7.1",
+    "supertest": "^2.0.1"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "request": "^2.79.0",
+    "sequelize": "^3.29.0",
+    "sqlite": "^2.2.3"
+  },
+  "engines": {
+    "node": ">= 6.8.1"
+  }
+}
