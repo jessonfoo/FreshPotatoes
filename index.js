@@ -45,10 +45,20 @@ function getAverageReviewRatingByFilmId(filmId) {
         return sum + parseInt(review.rating);
       });
       let average = totalRating / length;
-      return average;
-    } else {
-      return 0;
+      return average.toFixed(2);
     }
+  });
+}
+
+function getRatings(filmsArray) {
+  return Promise.each(filmsArray,function(film) {
+    return getAverageReviewRatingByFilmId(parseInt(film.id)).then( rating => {
+      if(rating) {
+        film.averageRating = rating;
+        console.log(film);
+        return film;
+      }
+    });
   });
 }
 function getRelatedFilms(filmId) {
@@ -93,16 +103,10 @@ function getFilmRecommendations(req, res) {
    let filmId = parseInt(params.id);
 
     sequelize.sync().then(function() {
-      getRelatedFilms(filmId).then(films => {
-        console.log(Array.isArray(films));
-
-
-     //   getAverageReviewRatingByFilmId(filmId);
-        return films;
-
-        })
-      .then(ratings=>{
-        console.log(typeof ratings);
+      getRelatedFilms(filmId).then(films =>
+        getRatings(films))
+      .then( ratings => {
+        console.log(ratings);
         return res.status(200).json(ratings);
 
       });
