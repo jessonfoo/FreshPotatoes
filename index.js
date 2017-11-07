@@ -67,7 +67,6 @@ function getRelatedFilms(filmId) {
     .then(filmQueryResponse => {
       // parse film query
       let film = filmQueryResponse.get({simple: true});
-      console.log(film);
       // define the genre id && parse int
       let genreId = parseInt(film.genreId);
       // use the film release date to create a new Date that we can use to query with
@@ -97,7 +96,31 @@ function getRelatedFilms(filmId) {
 function getFilmRecommendations(req, res) {
   try {
    let params = req.params;
-   let filmId = parseInt(params.id);
+   let paramKeys = Object.keys(params);
+   let limit = 10;
+   let offset = 0;
+   let filmId = false;
+   if(paramKeys.indexOf('limit') !== -1){
+     if(parseInt(params.limit) > 0) {
+       limit = params.limit;
+     }else{
+       throw Error("error:invalid limit");
+     }
+   }
+   if(paramKeys.indexOf('offset') !== -1){
+      if(parseInt(params.offset)  > 0) {
+        offset= params.offset;
+      }else{
+        throw Error("error:invalid offset");
+      }
+   }
+    if(paramKeys.indexOf('id') !== -1){
+      if(parseInt(params.id)  > 0) {
+        filmId= params.id;
+      }else{
+        throw Error("error:invalid id");
+      }
+    }
     sequelize.sync().then(function() {
       getRelatedFilms(filmId).then(films =>
         getRatings(films))
@@ -105,17 +128,23 @@ function getFilmRecommendations(req, res) {
         let rFilms = recommendations.filter(function(film){
           return (parseFloat(film.average_rating) > 4);
       });
-        return res.status(200).json({recommendations:rFilms});
+        return res.status(200).json({
+          recommendations:rFilms,
+          meta:{
+            limit:limit,
+            offset:offset
+          }
+        });
       });
     });
 
   }
   catch(e) {
     if(e && e.message) {
-      res.status(400).send('Error: ' + e.message);
+      res.status(400).json({error: e.message});
     } else {
       console.log(e);
-      res.status(500).send('Internal Server Error: Please Check Logs');
+      res.status(500).json({error:'Internal Server Error: Please Check Logs'});
     }
 
   }
