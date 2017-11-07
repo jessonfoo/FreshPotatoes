@@ -26,6 +26,31 @@ const Genre = sequelize.import('./app/models/genre');
 app.get('/films/:id/recommendations', getFilmRecommendations);
 
 // FUNCTIONS
+
+function getReviewsByFilmId(filmId) {
+  return Promise.resolve(request('get', 'http://credentials-api.generalassemb.ly/4576f55f-c427-4cfc-a11c-5bfe914ca6c1?films=' + filmId));
+}
+
+function getAverageReviewRatingByFilmId(filmId) {
+  return getReviewsByFilmId(filmId)
+  .then(res => {
+    let data = JSON.parse(res.getBody())[0];
+    let reviews = data.reviews;
+    let length = data.reviews.length;
+    if (length >= 5) {
+      let totalRating = reviews.reduce((sum, review) => {
+        if (typeof sum == 'object') {
+          return parseInt(sum.rating) + parseInt(review.rating);
+        }
+        return sum + parseInt(review.rating);
+      });
+      let average = totalRating / length;
+      return average;
+    } else {
+      return 0;
+    }
+  });
+}
 function getRelatedFilms(filmId) {
   return Promise.resolve(
     Film.sync()
@@ -69,7 +94,17 @@ function getFilmRecommendations(req, res) {
 
     sequelize.sync().then(function() {
       getRelatedFilms(filmId).then(films => {
-        res.json(films);
+        console.log(Array.isArray(films));
+
+
+     //   getAverageReviewRatingByFilmId(filmId);
+        return films;
+
+        })
+      .then(ratings=>{
+        console.log(typeof ratings);
+        return res.status(200).json(ratings);
+
       });
     });
 
